@@ -1,0 +1,11 @@
+# 个人配置（含本校路径，不提交）
+config.json
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+
+# 系统
+.DS_Store
+Thumbs.db

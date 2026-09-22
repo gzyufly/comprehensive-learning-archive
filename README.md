@@ -41,7 +41,6 @@ cp config.example.json config.json   # 然后编辑 config.json
 {
   "root": "H:\\综合性学习",
   "grades": ["九年级","八年级","七年级","六年级","五年级","四年级","三年级","二年级","一年级"],
-  "grade_aliases": ["九","八","七","六","五","四","三","二","一"],
   "year_keywords": ["学年","学期","续期"],
   "project_template": "{theme}——{grade}综合性学习",
   "stages": [
@@ -98,6 +97,49 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 - **学年文件夹命名特殊**（如 `2025级`、`七年级上`）：调整 `year_keywords` 或在脚本 `is_year_folder` 处自定义正则。
 - **阶段划分不同**：改 `stages` 数组。
 - **主题总表**（历年主题 `.doc`/`.docx`）：请用 Word/WPS 手动维护，脚本不读取二进制总表。
+
+---
+
+## 发布到远程仓库（开源给外校老师）
+
+本仓库已 `git init` 并提交（首次提交含 7 个文件，`config.json` 故意不纳入版本库，避免泄露各校私有路径）。下面把"推到 Gitee / GitHub"的完整步骤补齐，照做即可让外校老师 `git clone` 安装。
+
+### 第 1 步：在 Gitee / GitHub 网页上新建一个空仓库
+
+- **Gitee**：<https://gitee.com> → 右上角「+」→「新建仓库」→ 仓库名建议 `comprehensive-learning-archive` → 可见性选「公开」→ **不要**勾选「使用 README 初始化仓库」（保持空仓库）→ 创建。
+- **GitHub**：<https://github.com> → 右上角「New」→ Repository name 填 `comprehensive-learning-archive` → 选 **Public** → 不勾 Add README → Create repository。
+
+创建后会得到仓库地址（HTTPS 形如 `https://gitee.com/你的名/comprehensive-learning-archive.git` 或 `https://github.com/你的名/comprehensive-learning-archive.git`）。
+
+### 第 2 步：本地关联远程并推送
+
+在本仓库目录下执行（把 `<仓库URL>` 换成你刚拿到的地址）：
+
+```bash
+cd 路径/to/comprehensive-learning-archive
+git branch -M main          # 把本地 master 改名为开源惯例的 main
+git remote add origin <仓库URL>
+git push -u origin main
+```
+
+- 公开仓库（`Public`）用 HTTPS 地址即可，推送时按提示输入**账号 + 密码 / 个人访问令牌（PAT）**即可。
+- GitHub 自 2021 年起**不再接受账户密码**，请用 **Personal Access Token** 代替密码（Gitee 仍可用密码，也推荐用令牌）。
+- 推送成功后，仓库页面就能看到全部文件，把链接（设为 Public）发到教师群即可。
+
+### 第 3 步：外校老师安装（一行命令）
+
+```bash
+# 用户级（所有项目可用）
+git clone <仓库URL> ~/.workbuddy/skills/comprehensive-learning-archive
+# 或项目级（仅当前工作区）
+git clone <仓库URL> <你的项目>/.workbuddy/skills/comprehensive-learning-archive
+cd comprehensive-learning-archive && cp config.example.json config.json
+# 编辑 config.json 填入本校归档根目录后，即可在 WorkBuddy 中触发使用
+```
+
+### 私有仓库怎么办（可选）
+
+若资料含敏感信息需私有，把仓库设为 **Private**，外校老师安装时需在 `git clone` 时用 **PAT（勾选 read 权限）** 鉴权；也可直接把仓库打包成 zip 通过企业微信 / 微盘发给对方，对方解压到 `.workbuddy/skills/` 即可，无需 git 账号。
 
 ---
 

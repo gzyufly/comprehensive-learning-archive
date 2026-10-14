@@ -14,21 +14,60 @@
 
 ---
 
-## 安装
+## 安装（外校老师）
 
-### 方式一：直接用 WorkBuddy 打开（推荐给普通老师）
-1. 下载本仓库（Git 克隆或下载 zip 解压）。
-2. 把整个 `comprehensive-learning-archive` 文件夹复制到：
-   - **项目级**（仅当前工作区）：`<你的项目>/.workbuddy/skills/`
-   - **用户级**（所有项目可用）：`C:\Users\<你>\.workbuddy\skills\`（Windows）/ `~/.workbuddy/skills/`（macOS/Linux）
-3. 在技能目录里把 `config.example.json` 复制为 `config.json`，填好你的归档根目录（见下方"配置"）。
-4. 在 WorkBuddy 中直接说"找一下八年级近几年的综合实践项目"即可触发。
+安装 = 把技能文件夹放进 WorkBuddy 的技能目录 + 填一份 `config.json`。全程约 2 分钟，不需要装额外软件（有 Git 用 Git，没有就直接下载 zip）。
 
-### 方式二：开发者 / 想自己改
-```bash
-git clone <本仓库地址> ~/.workbuddy/skills/comprehensive-learning-archive
-cd ~/.workbuddy/skills/comprehensive-learning-archive
-cp config.example.json config.json   # 然后编辑 config.json
+### 第 1 步：拿到技能文件夹
+
+两种方式任选其一：
+
+- **会用 Git（推荐）**，PowerShell 里执行（装到**用户级**目录，之后所有项目都能用）：
+
+  ```powershell
+  git clone https://github.com/gzyufly/comprehensive-learning-archive.git "$HOME\.workbuddy\skills\comprehensive-learning-archive"
+  ```
+
+- **不会 Git**：在仓库页面点 `Code → Download ZIP`，解压后把里面的 `comprehensive-learning-archive-main` 文件夹**改名为 `comprehensive-learning-archive`**，整体复制到 `C:\Users\你的用户名\.workbuddy\skills\` 下。
+
+> 用户级 = `C:\Users\<你>\.workbuddy\skills\`（所有项目可用）；项目级 = `<你的项目>\.workbuddy\skills\`（仅当前工作区）。普通老师用用户级即可。
+
+### 第 2 步：填 `config.json`（唯一需要动手改的地方）
+
+```powershell
+cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"
+Copy-Item config.example.json config.json
+notepad config.json
+```
+
+打开后只改 `root`：把它换成本校"综合性学习"资料的总文件夹，例如 `"D:\\综合性学习"`。其余字段按学校实际情况改（见下方"配置"表）。
+
+> 注意：JSON 里 Windows 路径的反斜杠要**写成双斜杠**（`D:\\综合性学习`），写成单斜杠会让脚本读不到路径。
+
+### 第 3 步：重启 WorkBuddy，直接用自然语言提问
+
+重新打开 WorkBuddy（或新建一个会话），直接说人话即可触发，例如：
+
+> "帮我找一下八年级近几年的综合实践项目，分别在哪个学年、主题是什么"
+
+> WorkBuddy 会自动加载 `~/.workbuddy/skills/` 与项目 `.workbuddy/skills/` 下的技能；若装完没反应，先重启软件再试。
+
+### 验证是否装好了
+
+```powershell
+# WorkBuddy 自带 Python（无全局 python 时用这个）
+$py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
+& $py "$HOME\.workbuddy\skills\comprehensive-learning-archive\scripts\index_projects.py" --index
+```
+
+能打印出按年级/学年分组的项目清单 = 安装成功。若报错，先检查 `config.json` 里的 `root` 是否写成了真实存在的目录。
+
+### 开发者 / 想改代码
+
+```powershell
+git clone https://github.com/gzyufly/comprehensive-learning-archive.git "$HOME\.workbuddy\skills\comprehensive-learning-archive"
+cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"
+Copy-Item config.example.json config.json   # 再按需编辑
 ```
 
 ---
@@ -67,10 +106,10 @@ cp config.example.json config.json   # 然后编辑 config.json
 
 ## 使用（命令示例）
 
-> 以下用 WorkBuddy 受管 Python 演示；如环境有全局 `python3` 可直接替换。
+> 以下用 WorkBuddy 受管 Python 演示，`<你>` 换成你自己的 Windows 用户名；如环境有全局 `python`，把 `$py` 直接换成 `python` 即可。
 
 ```powershell
-$py = "C:\Users\tang\.workbuddy\binaries\python\versions\3.13.12\python.exe"
+$py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 
 # 1) 列出全部年级项目索引
@@ -115,8 +154,8 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 
 在本仓库目录下执行（把 `<仓库URL>` 换成你刚拿到的地址）：
 
-```bash
-cd 路径/to/comprehensive-learning-archive
+```powershell
+cd 路径\to\comprehensive-learning-archive
 git branch -M main          # 把本地 master 改名为开源惯例的 main
 git remote add origin <仓库URL>
 git push -u origin main
@@ -126,15 +165,16 @@ git push -u origin main
 - GitHub 自 2021 年起**不再接受账户密码**，请用 **Personal Access Token** 代替密码（Gitee 仍可用密码，也推荐用令牌）。
 - 推送成功后，仓库页面就能看到全部文件，把链接（设为 Public）发到教师群即可。
 
-### 第 3 步：外校老师安装（一行命令）
+### 第 3 步：把安装说明转给外校老师
 
-```bash
-# 用户级（所有项目可用）
-git clone <仓库URL> ~/.workbuddy/skills/comprehensive-learning-archive
-# 或项目级（仅当前工作区）
-git clone <仓库URL> <你的项目>/.workbuddy/skills/comprehensive-learning-archive
-cd comprehensive-learning-archive && cp config.example.json config.json
-# 编辑 config.json 填入本校归档根目录后，即可在 WorkBuddy 中触发使用
+仓库设为 Public 后，直接把链接（如 <https://github.com/gzyufly/comprehensive-learning-archive>）发到教师群即可，对方照本文顶部的**「安装（外校老师）」**三步操作：clone 或下载 zip → 复制 `config.example.json` 为 `config.json` 并改 `root` → 重启 WorkBuddy 用自然语言提问。
+
+Windows 一行命令版（对方是 PowerShell 环境时）：
+
+```powershell
+git clone <仓库URL> "$HOME\.workbuddy\skills\comprehensive-learning-archive"
+cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.example.json config.json
+# 编辑 config.json 里的 root 为本校归档根目录，重启 WorkBuddy 即可触发
 ```
 
 ### 私有仓库怎么办（可选）

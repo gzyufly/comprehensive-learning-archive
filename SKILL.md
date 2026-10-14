@@ -1,6 +1,12 @@
 ---
 name: comprehensive-learning-archive
+display_name: 综合性学习资料库管理
+display_name_en: Comprehensive Learning Archive
 description: 学校"综合性学习 / 综合实践"项目资料库的查询与维护技能（通用版，不绑定任何学校）。资料按学年/学期建顶层文件夹，每个文件夹内以年级组为单位存放各年级当年的项目（主题每年不同）。当用户需要"按年级组/学年查找某个年级的综合实践项目资料""查看某年级某年的项目结构或某个文件""新增/移动/重命名项目资料""为新年级或新学年搭建标准文件夹骨架"时使用本技能。触发词：综合性学习、综合实践、年级组、某年级项目、开题/结题资料、三角模型、展板、复盘表、主题课程。
+description_zh: 按年级组与学年查询、浏览、维护学校"综合性学习/综合实践"项目资料库，并可一键搭建标准五阶段文件夹骨架。
+description_en: Query, browse and maintain a school's comprehensive-learning / project-based-learning archive by grade group and school year, with one-click five-stage folder scaffolding.
+version: 1.0.0
+author: 阿才
 agent_created: true
 ---
 
@@ -30,8 +36,8 @@ agent_created: true
 **执行方式（首选脚本，确定性最高）：** 运行 `scripts/index_projects.py` 生成结构化索引，并按年级/学年过滤。
 
 ```powershell
-# 使用受管 Python 运行（若环境无全局 python）
-$py = "C:\Users\tang\.workbuddy\binaries\python\versions\3.13.12\python.exe"
+# 使用受管 Python 运行（若环境无全局 python，可用 WorkBuddy 自带 Python；<你> 换成自己的 Windows 用户名）
+$py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 # 已有 config.json 时，--root 可省略
 & $py "路径\to\comprehensive-learning-archive\scripts\index_projects.py" --index
 # 仅看某年级（支持 八年级 / 八 / 五年级 / 五 等写法）

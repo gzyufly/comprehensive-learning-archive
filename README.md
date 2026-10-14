@@ -183,6 +183,67 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 
 ---
 
+## 上架到 WorkBuddy 技能市场（让外校老师一键安装）
+
+如果希望外校老师不用 clone、直接在 WorkBuddy 左侧菜单【专家·技能·连接器】→【技能】→【技能市场】里**搜到并一键安装**，需要把技能提交到腾讯开放平台 / SkillHub 审核，通过后即上架。
+
+### 第 1 步：准备账号
+
+- 打开 <https://open.workbuddy.cn/>，按页面提示完成**入驻、认证与开发者信息审核**；开发者主页建议上传头像、写 20~120 字简介。
+- 走 SkillHub 通道则访问 <https://skillhub.cn>，用团队账号点右上角「发布团队 Skill」。
+
+### 第 2 步：准备符合规范的 zip 包
+
+平台规范（据官方技能文档）：
+
+| 项 | 要求 |
+|---|---|
+| 包结构 | zip 内第一层必须是技能目录：`comprehensive-learning-archive/SKILL.md` |
+| 目录层级 | 最多两级（`SKILL.md`、`references/xx.md`、`scripts/xx.py` 均合规） |
+| 体积 | ≤ 3MB（本技能约 12KB） |
+| 禁止带入 | `.git/`、`config.json`（含本校真实路径）、API Key / 密码等隐私信息 |
+
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.0.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+
+自己重新打包（PowerShell）：
+
+```powershell
+$src   = "路径\to\comprehensive-learning-archive"
+$stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
+Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
+Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
+Copy-Item "$src\references", "$src\scripts" $stage -Recurse
+Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.0.zip" -Force
+```
+
+### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
+
+| 字段 | 必填 | 本仓库当前值 |
+|---|---|---|
+| `name` | 否 | `comprehensive-learning-archive` |
+| `display_name` / `display_name_en` | 否 | 综合性学习资料库管理 / Comprehensive Learning Archive |
+| `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
+| `description_zh` / `description_en` | **是** | 中英文简短介绍 |
+| `version` | **是** | `1.0.0` |
+| `author` | **是** | `阿才`（上架前请改成你的署名） |
+
+### 第 4 步：提交审核
+
+1. 在开放平台找到「提交 / 发布 Skill」入口（SkillHub 为右上角「发布团队 Skill」）。
+2. 填写标题、简介、分类、触发词预览等元信息，上传 zip 包。
+3. 等待审核：**平台安全审核 →（企业账号还需管理员审核）**，通常 1~3 个工作日。
+4. 审核通过后在【技能列表】点「上架」，即可在 WorkBuddy 技能市场被搜索、安装。
+
+### 第 5 步：常见驳回原因（提前规避）
+
+- `description` 写成"一个很有用的工具"这类没有触发条件的描述。
+- 压缩包里混入 `.git`、缓存文件，或含真实路径的 `config.json`。
+- 脚本含网络请求却未在说明中写清域名与用途（**本技能纯本地运行，无任何网络请求**）。
+- 缺少使用示例（本技能 SKILL.md 的"何时使用"已内置问答示例）。
+
+---
+
 ## 许可证
 
 [MIT](LICENSE) —— 可自由用于任何学校，欢迎修改与再分发。

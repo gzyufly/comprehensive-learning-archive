@@ -203,7 +203,7 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 | 体积 | ≤ 3MB（本技能约 12KB） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、API Key / 密码等隐私信息 |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.0.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.1.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 自己重新打包（PowerShell）：
 
@@ -214,7 +214,7 @@ Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
-Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.0.zip" -Force
+Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.1.zip" -Force
 ```
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
@@ -225,8 +225,8 @@ Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehen
 | `display_name` / `display_name_en` | 否 | 综合性学习资料库管理 / Comprehensive Learning Archive |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.0.0` |
-| `author` | **是** | `阿才`（上架前请改成你的署名） |
+| `version` | **是** | `1.0.1` |
+| `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核
 

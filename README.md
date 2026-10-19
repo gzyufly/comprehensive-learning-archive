@@ -203,7 +203,7 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 | 体积 | ≤ 3MB（本技能约 12KB） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、API Key / 密码等隐私信息 |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.1.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.2.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 自己重新打包（PowerShell）：
 
@@ -214,7 +214,8 @@ Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
-Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.1.zip" -Force
+# 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.2.zip" -Force
 ```
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
@@ -225,7 +226,7 @@ Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehen
 | `display_name` / `display_name_en` | 否 | 综合性学习资料库管理 / Comprehensive Learning Archive |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.0.1` |
+| `version` | **是** | `1.0.2` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核
@@ -241,6 +242,55 @@ Compress-Archive -Path (Split-Path $stage) -DestinationPath "$env:TEMP\comprehen
 - 压缩包里混入 `.git`、缓存文件，或含真实路径的 `config.json`。
 - 脚本含网络请求却未在说明中写清域名与用途（**本技能纯本地运行，无任何网络请求**）。
 - 缺少使用示例（本技能 SKILL.md 的"何时使用"已内置问答示例）。
+
+---
+
+## 自己更新版本（改内容 → 升版本号 → 重新打包上传）
+
+平台规则：**每次上传的版本号必须严格大于线上最新版本号**。版本号相同或更低会直接报
+
+> 解析失败：包内版本号 "1.0.1" 必须大于当前最新版本 "1.0.1"：请将 SKILL.md 中的 version 递增后重新打包上传
+
+### 1. 版本号怎么升（语义化版本 X.Y.Z）
+
+| 改动类型 | 升哪一位 | 示例 |
+|---|---|---|
+| 改文案、改署名、修错别字、仅重新打包 | 第三位 Z +1 | 1.0.1 → 1.0.2 |
+| 新增功能或命令（如加一个 `--export` 参数） | 第二位 Y +1，Z 归 0 | 1.0.2 → 1.1.0 |
+| 不兼容的结构性改动（改配置字段名、改脚本参数） | 第一位 X +1，Y/Z 归 0 | 1.1.0 → 2.0.0 |
+
+### 2. 四步流程
+
+1. **改内容**：编辑技能目录下的 `SKILL.md` / `scripts/index_projects.py` / `references/folder-structure.md`。
+2. **升版本**：把 `SKILL.md` frontmatter 里的 `version` 按上表加一（只改这一处）。
+3. **重新打包**（PowerShell，把 `路径\to\comprehensive-learning-archive` 换成实际路径）：
+
+```powershell
+$src   = "路径\to\comprehensive-learning-archive"
+$stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
+Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
+New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
+Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
+Copy-Item "$src\references", "$src\scripts" $stage -Recurse
+# 注意：-Path 必须指向技能目录本身，指向父目录会让 zip 多套一层，导致解析失败
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-<新版本号>.zip" -Force
+```
+
+4. **自查后上传**：
+   - 打开 `SKILL.md` 确认 `version` 已是新号；
+   - 双击生成的 zip，确认第一层是 `comprehensive-learning-archive\` 文件夹（不是 `skillhub\` 或 Temp 目录）；
+   - 确认包里没有 `.git`、`config.json`；
+   - 到开放平台提交新 zip，审核通过后上架。
+
+### 3. 常见报错对照
+
+| 报错 | 原因 | 处理 |
+|---|---|---|
+| 包内版本号必须大于当前最新版本 | 版本号没升，或升得不够 | 按上表升一位，改 `SKILL.md` 的 `version` 后重打 |
+| 解析失败（结构类） | zip 第一层不是技能目录，或包内混入 `.git` / `config.json` | 用上面的命令重打，别用"直接压缩整个仓库文件夹"的方式 |
+| description 相关驳回 | 触发条件写得含糊 | 保留 `SKILL.md` 现有的 description 写法（已按平台规范写过） |
+
+> 想让 GitHub 上的开源仓库与上架版本保持一致，改完再执行 `git add . ; git commit -m "..." ; git push` 即可；这一步不影响上架审核，可只做上架、不同步仓库。
 
 ---
 

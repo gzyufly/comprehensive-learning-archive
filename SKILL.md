@@ -1,11 +1,11 @@
 ---
 name: comprehensive-learning-archive
-display_name: 综合性学习资料库管理
+display_name: 综合性学习课程资料
 display_name_en: Comprehensive Learning Archive
 description: 学校"综合性学习 / 综合实践"项目资料库的查询与维护技能（通用版，不绑定任何学校）。资料按学年/学期建顶层文件夹，每个文件夹内以年级组为单位存放各年级当年的项目（主题每年不同）。当用户需要"按年级组/学年查找某个年级的综合实践项目资料""查看某年级某年的项目结构或某个文件""新增/移动/重命名项目资料""为新年级或新学年搭建标准文件夹骨架"时使用本技能。触发词：综合性学习、综合实践、年级组、某年级项目、开题/结题资料、三角模型、展板、复盘表、主题课程。
 description_zh: 按年级组与学年查询、浏览、维护学校"综合性学习/综合实践"项目资料库，并可一键搭建标准五阶段文件夹骨架。
 description_en: Query, browse and maintain a school's comprehensive-learning / project-based-learning archive by grade group and school year, with one-click five-stage folder scaffolding.
-version: 1.0.2
+version: 1.0.3
 author: 广州番禺京师奥园南奥实验学校唐术才
 agent_created: true
 ---

@@ -203,7 +203,7 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 | 体积 | ≤ 3MB（本技能约 12KB） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、API Key / 密码等隐私信息 |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.2.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.3.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 自己重新打包（PowerShell）：
 
@@ -215,7 +215,7 @@ New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
 # 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.2.zip" -Force
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.3.zip" -Force
 ```
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
@@ -223,10 +223,10 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | 字段 | 必填 | 本仓库当前值 |
 |---|---|---|
 | `name` | 否 | `comprehensive-learning-archive` |
-| `display_name` / `display_name_en` | 否 | 综合性学习资料库管理 / Comprehensive Learning Archive |
+| `display_name` / `display_name_en` | 否 | 综合性学习课程资料 / Comprehensive Learning Archive |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.0.2` |
+| `version` | **是** | `1.0.3` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核

@@ -5,7 +5,7 @@ display_name_en: Comprehensive Learning Archive
 description: 学校"综合性学习 / 综合实践"项目资料库的查询与维护技能（通用版，不绑定任何学校）。资料按学年/学期建顶层文件夹，每个文件夹内以年级组为单位存放各年级当年的项目（主题每年不同）。当用户需要"按年级组/学年查找某个年级的综合实践项目资料""查看某年级某年的项目结构或某个文件""新增/移动/重命名项目资料""为新年级或新学年搭建标准文件夹骨架"时使用本技能。当老师询问"怎么设计主题课程或项目课程、大概念和目标怎么写、目标怎么对齐、任务怎么分解、三角模型怎么填、进度怎么统筹、结题后怎么复盘反思、课程基因怎么沉淀"，或需要空白的设计表/对齐表/统筹表/进度表模板时，也应使用本技能。触发词：综合性学习、综合实践、年级组、某年级项目、开题/结题资料、三角模型、展板、复盘表、主题课程、主题课程设计、项目课程设计、大概念、目标对齐、任务分解、统筹表、进度表、复盘反思、课程基因、模板。
 description_zh: 按年级组与学年查询、浏览、维护学校"综合性学习/综合实践"项目资料库，一键搭建标准五阶段文件夹骨架，并能引导课程设计与复盘工具的使用、提供空白模板表（市场安装包内含 assets/ 全套母版，字段级填写要点见 references/course-design-toolkit.md）。
 description_en: Query, browse and maintain a school's comprehensive-learning / project-based-learning archive by grade group and school year, with one-click five-stage folder scaffolding and guidance on course-design and review toolkits.
-version: 1.2.0
+version: 1.3.0
 author: 广州番禺京师奥园南奥实验学校唐术才
 agent_created: true
 ---
@@ -31,6 +31,7 @@ agent_created: true
 - **"组长怎么把各项目目标对齐、把全年进度统筹起来"**
 - **"项目结题了，复盘反思怎么做、课程基因怎么沉淀"**
 - **"有没有空白的大概念表述表 / 对齐表 / 统筹表 / 进度表模板"**
+- 外校老师不知如何开口提问时，给一份 `references/prompt-cheatsheet.md`（按角色整理的提问句式速查卡）
 
 ## 核心能力
 
@@ -125,6 +126,7 @@ $py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 - `scripts/index_projects.py`：扫描归档、按年级关键词识别并抽取主题、生成索引/目录树/搭建骨架的确定性脚本（支持 `--index` / `--grade` / `--year` / `--json` / `--tree` / `--scaffold` / `--config` / `--grades`）。
 - `references/folder-structure.md`：归档结构通用说明——顶层结构、年级命名识别、五阶段内部框架、检索关键词、操作约束。
 - `references/course-design-toolkit.md`：**课程设计与复盘工具箱导航**——`综合性学习工具`文件夹的 21 个文件逐个说明（含字段级填写要点）、工具↔五阶段对位表、组长线/项目负责人线/进度线/复盘线四条工作主线、术语表与使用约束。
+- `references/prompt-cheatsheet.md`：**提示词速查卡**——按角色（年级组长 / 项目负责人 / 结题复盘 / 资料管理员）整理的常用提问句式，可直接发给外校老师入门使用。
 - `assets\`（**仅随市场安装包/完整包分发，Git 仓库不含二进制模板**）：19 个空白母版——大概念及目标表述、课程设计和实施结构图（xmind）、主题实施进度表、目标对齐表（组长/负责人两版）、项目设计统筹表（组长/负责人两版）、三角模型要素清单、整体/单项目进度表、复盘纲要、基因卡三件套、3 个培训 PPT。扁平存放，同名即工具箱原件。
 - `scripts/build_market_package.py`：从"工具箱源（zip 或文件夹）+ 仓库文档"在内存中构建含 `assets\` 的市场安装包（默认对范例文件中的真实姓名脱敏），用于重新打出完整包。
 - `config.example.json`：配置模板。

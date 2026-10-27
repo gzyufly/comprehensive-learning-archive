@@ -11,7 +11,20 @@
 1. **按年级组 + 学年定位项目**：一键列出某校某年级历年所有综合实践项目（年份、主题、路径、文件数）。
 2. **浏览项目内部结构**：打印某年级项目的完整目录树，快速定位开题方案、结题新闻稿、三角模型、展板、视频等。
 3. **调整与维护**：新增 / 移动 / 重命名资料，或为新学年、新年级一键搭建标准"五阶段"文件夹骨架。
-4. **课程设计与复盘工具引导**：告诉老师不同角色（年级组长 / 项目负责人）在课程设计、目标对齐、任务分解、进度统筹、结题复盘各环节该用哪张表、怎么填、填完归档到哪里，并提供空白模板母版（见 `references/course-design-toolkit.md`）。
+4. **课程设计与复盘工具引导**：告诉老师不同角色（年级组长 / 项目负责人）在课程设计、目标对齐、任务分解、进度统筹、结题复盘各环节该用哪张表、怎么填、填完归档到哪里，并提供**字段级填写要点**（见 `references/course-design-toolkit.md`）与**空白模板母版**（市场安装包内含 `assets/` 全套 19 个母版）。
+
+---
+
+## 模板库（assets/）与双轨分发
+
+v1.2.0 起技能附带 **19 个空白母版**（`assets/` 扁平存放）：7 张课程设计表单、课程设计和实施结构图（xmind）、整体/单项目进度表、项目设计统筹表（培训版）、复盘纲要、基因卡三件套、3 个培训 PPT，另有《二年级三角模型清单更改》低年段已填范例（已脱敏）。
+
+| 获取方式 | 内容 | 适用 |
+|---|---|---|
+| **市场安装版**（推荐） | 文档 + 脚本 + `assets/` 全套母版 | 外校老师一键安装，解压即用 |
+| **Git 仓库版** | 仅文档 + 脚本 | 想改代码/看结构的开发者；二进制模板受作者本机安全策略限制无法入库 |
+
+> 需要模板但只有仓库版的老师：安装市场版；或运行 `scripts/build_market_package.py` 从本校"综合性学习工具"文件夹重新生成完整包（详见「上架到 WorkBuddy 技能市场」一节）。字段级填写要点不依赖二进制，直接读 `references/course-design-toolkit.md` 第 5 节即可自行制表。
 
 ---
 
@@ -138,7 +151,7 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 - "**项目结题了，复盘反思怎么做、课程基因怎么沉淀**"
 - "**有没有空白的大概念表述表 / 对齐表 / 统筹表 / 进度表模板**"
 
-> 后四类问题由 `references/course-design-toolkit.md`（课程设计与复盘工具箱导航）回答：内含 23 个工具文件逐个说明、工具 ↔ 归档五阶段对位表、组长线 / 项目负责人线 / 进度线 / 复盘线四条工作主线。
+> 后四类问题由 `references/course-design-toolkit.md`（课程设计与复盘工具箱导航）回答：内含 21 个工具文件逐个说明（每张表的关键栏目与母版自带填写说明）、工具 ↔ 归档五阶段对位表、组长线 / 项目负责人线 / 进度线 / 复盘线四条工作主线；空白母版在市场安装包的 `assets/` 内。
 
 ---
 
@@ -213,12 +226,24 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 |---|---|
 | 包结构 | zip 内第一层必须是技能目录：`comprehensive-learning-archive/SKILL.md` |
 | 目录层级 | 最多两级（`SKILL.md`、`references/xx.md`、`scripts/xx.py` 均合规） |
-| 体积 | ≤ 3MB（v1.1.0 约 30KB；v1.2.0 起含 `assets/` 模板文件，约 1.9–2.1MB，仍在限内但余量有限） |
+| 体积 | ≤ 3MB（v1.2.0 含 `assets/` 模板文件，约 1.9MB，仍在限内但余量有限） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、`~$*`（Office 临时锁文件）、API Key / 密码等隐私信息 |
+| 隐私 | 范例文件中的真实教师姓名已在打包时脱敏（替换为"某"） |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.1.0.zip`，含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.2.0.zip`（含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`、`assets/` 19 个母版），已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
-自己重新打包（PowerShell）：
+**含 `assets/` 的完整包必须用构建脚本生成**（二进制母版不在 Git 仓库里，无法用 Copy-Item 收集）：
+
+```powershell
+$py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
+& $py "路径\to\comprehensive-learning-archive\scripts\build_market_package.py" `
+    --source "C:\Users\<你>\AppData\Local\Temp\cla.zip" `
+    --out   "路径\to\comprehensive-learning-archive-1.2.0.zip"
+```
+
+`--source` 接受两种输入：① 工具箱打包成的 zip（推荐——把本校"综合性学习工具"文件夹整体压缩即可，脚本内存解压、不落盘）；② 工具箱文件夹路径。脚本自动完成：取仓库文档/脚本 → 母版扁平放入 `assets/` → 默认脱敏范例文件中的真实姓名（`--no-desensitize` 可关闭）→ 排除 `~$` 锁文件与 2 个历史版结构图（`--include-history` 可纳入）→ 生成 `assets/母版清单.txt` → 打包后自查（第一层目录、层级、体积、脱敏校验）。
+
+**只打文档版**（不含 assets，体积约 30KB）才用 Compress-Archive，注意此时**没有** `assets` 一行可复制：
 
 ```powershell
 $src   = "路径\to\comprehensive-learning-archive"
@@ -227,12 +252,9 @@ Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
-Copy-Item "$src\assets" $stage -Recurse        # 仅当存在 assets/（v1.2.0 起）
 # 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.1.0.zip" -Force
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.2.0.zip" -Force
 ```
-
-> `assets/` 内必须**扁平放文件**（`assets\1—1、主题课程大概念及目标表述.docx`），不要再套子目录——平台要求包内目录最多两级。
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
 
@@ -242,7 +264,7 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | `display_name` / `display_name_en` | 否 | 综合性学习课程资料 / Comprehensive Learning Archive |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.1.0` |
+| `version` | **是** | `1.2.0` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核
@@ -279,19 +301,25 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 
 1. **改内容**：编辑技能目录下的 `SKILL.md` / `scripts/index_projects.py` / `references/folder-structure.md` / `references/course-design-toolkit.md`。
 2. **升版本**：把 `SKILL.md` frontmatter 里的 `version` 按上表加一（只改这一处）。
-3. **重新打包**（PowerShell，把 `路径\to\comprehensive-learning-archive` 换成实际路径）：
+3. **重新打包**：
+   - **完整包（含 assets/，外校老师要用的就是这个）**：用构建脚本，一条命令（详见「上架」一节的说明）：
 
-```powershell
-$src   = "路径\to\comprehensive-learning-archive"
-$stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
-Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
-New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
-Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
-Copy-Item "$src\references", "$src\scripts" $stage -Recurse
-Copy-Item "$src\assets" $stage -Recurse        # 仅当存在 assets/
-# 注意：-Path 必须指向技能目录本身，指向父目录会让 zip 多套一层，导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-<新版本号>.zip" -Force
-```
+     ```powershell
+     & $py "路径\to\comprehensive-learning-archive\scripts\build_market_package.py" --source <工具箱zip或文件夹>
+     ```
+
+   - **文档版（不含 assets，约 30KB）**：Compress-Archive，注意**没有** `assets` 一行可复制：
+
+     ```powershell
+     $src   = "路径\to\comprehensive-learning-archive"
+     $stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
+     Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
+     New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
+     Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
+     Copy-Item "$src\references", "$src\scripts" $stage -Recurse
+     # 注意：-Path 必须指向技能目录本身，指向父目录会让 zip 多套一层，导致解析失败
+     Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-<新版本号>.zip" -Force
+     ```
 
 4. **自查后上传**：
    - 打开 `SKILL.md` 确认 `version` 已是新号；

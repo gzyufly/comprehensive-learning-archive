@@ -15,3 +15,7 @@ Thumbs.db
 
 # 发布用安装包（只放本地 dist/，不入库）
 *.zip
+
+# assets/ 二进制母版：受作者本机安全策略限制无法写盘入库，
+# 仅随市场安装包分发（用 scripts/build_market_package.py 生成）
+assets/

@@ -5,7 +5,7 @@ display_name_en: Project-Based Comprehensive Learning
 description: 学校"综合性学习 / 综合实践"项目资料库的查询与维护技能（通用版，不绑定任何学校）。资料按学年/学期建顶层文件夹，每个文件夹内以年级组为单位存放各年级当年的项目（主题每年不同）。当用户需要"按年级组/学年查找某个年级的综合实践项目资料""按主题检索历年项目（某主题在哪一年、哪个年级做过）""查看某年级某年的项目结构或某个文件""新增/移动/重命名项目资料""为新年级或新学年搭建标准文件夹骨架"时使用本技能。当老师询问"怎么设计主题课程或项目课程、大概念和目标怎么写、目标怎么对齐、任务怎么分解、三角模型怎么填、进度怎么统筹、结题后怎么复盘反思、课程基因怎么沉淀"，或需要空白的设计表/对齐表/统筹表/进度表模板时，也应使用本技能。触发词：综合性学习、综合实践、年级组、某年级项目、开题/结题资料、三角模型、展板、复盘表、主题课程、主题课程设计、项目课程设计、大概念、目标对齐、任务分解、统筹表、进度表、复盘反思、课程基因、模板、主题检索、哪一年做过、历年项目。
 description_zh: 按年级组、学年或主题检索、浏览、维护学校"综合性学习/综合实践"项目资料库（支持按主题检索历年项目），一键搭建标准五阶段文件夹骨架，并能引导课程设计与复盘工具的使用、提供空白模板表（市场安装包内含 assets/ 全套母版，字段级填写要点见 references/course-design-toolkit.md）。
 description_en: Query, browse and maintain a school's comprehensive-learning / project-based-learning archive by grade group and school year, with one-click five-stage folder scaffolding and guidance on course-design and review toolkits.
-version: 1.4.0
+version: 1.4.1
 author: 广州番禺京师奥园南奥实验学校唐术才
 agent_created: true
 ---
@@ -90,7 +90,7 @@ $py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 2. **按角色给路径**：组长走"大概念与目标 → 结构图 → 主题进度 → 对齐汇总 → 统筹汇总"；项目负责人走"对齐表 → 任务分解统筹表 → 三角模型"；结题后走"复盘反思表 → 课程基因卡 → 基因库"。
 3. **模板先复制后填写**：`assets\`（市场安装包）与本校工具箱内都是空白母版，**先复制到对应年级项目文件夹再填**，切勿原地改母版。
 4. **二进制必须用对应软件**：`.docx`/`.xlsx` 用 Word/WPS/Excel，`.xmind` 用 XMind，`.xls` 为旧版 Excel 格式——都不能用 Read 直接读。
-5. **缺范例时回归档找**：用 `index_projects.py --tree <年级项目文件夹>` 定位往年同阶段的成品（如"三角模型设计表""复盘反思表"）作为填写范例。
+5. **缺范例时回归档找**：先用 `index_projects.py --theme <主题关键词>` 找往年同主题项目（跨学年/年级），再用 `index_projects.py --tree <年级项目文件夹>` 定位其中同阶段的成品（如"三角模型设计表""复盘反思表"）作为填写范例。
 
 ## 配置（config.json）
 

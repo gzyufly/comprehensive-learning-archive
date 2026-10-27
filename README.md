@@ -233,11 +233,11 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 |---|---|
 | 包结构 | zip 内第一层必须是技能目录：`comprehensive-learning-archive/SKILL.md` |
 | 目录层级 | 最多两级（`SKILL.md`、`references/xx.md`、`scripts/xx.py` 均合规） |
-| 体积 | ≤ 3MB（v1.4.0 含 `assets/` 模板文件，约 1.9MB，仍在限内但余量有限） |
+| 体积 | ≤ 3MB（v1.4.1 含 `assets/` 模板文件，约 1.9MB，仍在限内但余量有限） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、`~$*`（Office 临时锁文件）、API Key / 密码等隐私信息 |
 | 隐私 | 范例文件中的真实教师姓名已在打包时脱敏（替换为"某"） |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.4.0.zip`（含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`、`assets/` 19 个母版），已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.4.1.zip`（含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`、`assets/` 19 个母版），已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 **含 `assets/` 的完整包必须用构建脚本生成**（二进制母版不在 Git 仓库里，无法用 Copy-Item 收集）：
 
@@ -245,7 +245,7 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 $py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 & $py "路径\to\comprehensive-learning-archive\scripts\build_market_package.py" `
     --source "C:\Users\<你>\AppData\Local\Temp\cla.zip" `
-    --out   "路径\to\comprehensive-learning-archive-1.4.0.zip"
+    --out   "路径\to\comprehensive-learning-archive-1.4.1.zip"
 ```
 
 `--source` 接受两种输入：① 工具箱打包成的 zip（推荐——把本校"综合性学习工具"文件夹整体压缩即可，脚本内存解压、不落盘）；② 工具箱文件夹路径。脚本自动完成：取仓库文档/脚本 → 母版扁平放入 `assets/` → 默认脱敏范例文件中的真实姓名（`--no-desensitize` 可关闭）→ 排除 `~$` 锁文件与 2 个历史版结构图（`--include-history` 可纳入）→ 生成 `assets/母版清单.txt` → 打包后自查（第一层目录、层级、体积、脱敏校验）。
@@ -260,7 +260,7 @@ New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
 # 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.4.0.zip" -Force
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.4.1.zip" -Force
 ```
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
@@ -271,7 +271,7 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | `display_name` / `display_name_en` | 否 | 项目式综合性学习课程 / Project-Based Comprehensive Learning |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.4.0` |
+| `version` | **是** | `1.4.1` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核

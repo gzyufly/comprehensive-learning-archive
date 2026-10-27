@@ -1,4 +1,4 @@
-# comprehensive-learning-archive · 综合性学习资料库管理技能
+# comprehensive-learning-archive · 项目式综合性学习课程
 
 一个用于 **WorkBuddy** 的技能（Skill），帮助中小学老师按"年级组"快速查询、浏览和维护本校"综合性学习 / 综合实践"项目资料库。
 
@@ -263,7 +263,7 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | 字段 | 必填 | 本仓库当前值 |
 |---|---|---|
 | `name` | 否 | `comprehensive-learning-archive` |
-| `display_name` / `display_name_en` | 否 | 综合性学习课程资料 / Comprehensive Learning Archive |
+| `display_name` / `display_name_en` | 否 | 项目式综合性学习课程 / Project-Based Comprehensive Learning |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
 | `version` | **是** | `1.3.0` |

@@ -48,6 +48,7 @@ import json
 import os
 import re
 import sys
+import unicodedata
 
 # 强制 stdout 以 UTF-8 输出（Windows 控制台默认 GBK，管道/重定向后会乱码）
 try:
@@ -190,15 +191,29 @@ def scan(root, grades, year_keywords):
     return rows
 
 
+def _disp_width(s):
+    """终端显示宽度：中文/全角字符占 2 列，其余占 1 列。"""
+    return sum(2 if unicodedata.east_asian_width(ch) in ("W", "F") else 1
+               for ch in s)
+
+
+def _pad(s, width):
+    """按显示宽度左对齐补空格（保证中文列不错位）。"""
+    return s + " " * max(0, width - _disp_width(s))
+
+
 def print_index(rows):
     if not rows:
         print("未找到任何年级项目文件夹。请确认 root 路径与 grades 配置。")
         return
-    header = f"{'学年/学期':<22} {'年级':<6} {'主题':<22} {'文件数':>6}  路径"
+    cols = [("学年/学期", 24), ("年级", 6), ("主题", 24), ("文件数", 6)]
+    header = "  ".join(_pad(h, w) for h, w in cols) + "  路径"
     print(header)
-    print("-" * len(header))
+    print("-" * _disp_width(header))
     for y, g, t, p, c in rows:
-        print(f"{y:<22} {g:<6} {t:<22} {c:>6}  {p}")
+        row = "  ".join([_pad(y, cols[0][1]), _pad(g, cols[1][1]),
+                         _pad(t, cols[2][1]), str(c).rjust(cols[3][1])]) + "  " + p
+        print(row)
 
 
 def print_tree(path, max_depth=3):

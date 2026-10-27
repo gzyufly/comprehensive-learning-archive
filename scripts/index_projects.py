@@ -22,6 +22,8 @@ r"""
   $py = "C:\Users\tang\.workbuddy\binaries\python\versions\3.13.12\python.exe"
   & $py index_projects.py --root "<归档根目录>" --index
   & $py index_projects.py --root "<归档根目录>" --grade 八年级 --json
+  & $py index_projects.py --root "<归档根目录>" --theme AI未来        # 按主题检索（跨学年/年级）
+  & $py index_projects.py --root "<归档根目录>" --theme 小豆 --grade 二年级
   & $py index_projects.py --root "<归档根目录>" --tree "<某年级项目文件夹路径>"
   & $py index_projects.py --root "<归档根目录>" --scaffold --grade 三年级 --theme 奇石妙想 --year 2025—2026第二学期
 
@@ -30,6 +32,9 @@ r"""
                「学年 | 年级 | 主题 | 文件夹路径 | 文件数」索引表。
   --grade G    仅显示指定年级（支持 八年级 / 八 / 五年级 / 五 / 三下 等写法）。
   --year Y     仅显示指定学年文件夹（子串匹配，如 2024—2025第二学期 / 2024）。
+  --theme K    不带 --scaffold 时：按主题关键词检索（同时匹配"抽出的主题"与
+               "项目文件夹名"，大小写不敏感，如 AI未来 / 豆芽 / 羊城），
+               命中多学年多年级时按主题聚类输出；带 --scaffold 时：新项目主题名。
   --json       以 JSON 形式输出（便于二次处理）。
   --tree PATH  打印 PATH（通常是一个年级项目文件夹）的目录树，
                目录带 [N文件] 标注，限制深度避免照片刷屏。
@@ -262,7 +267,7 @@ def main():
     ap.add_argument("--json", action="store_true", help="JSON 输出")
     ap.add_argument("--tree", metavar="PATH", help="打印某路径的目录树")
     ap.add_argument("--scaffold", action="store_true", help="搭建新年级项目骨架")
-    ap.add_argument("--theme", help="--scaffold 用的主题名")
+    ap.add_argument("--theme", help="主题关键词（不带 --scaffold 时按主题检索索引；带 --scaffold 时为新项目主题名）")
     args = ap.parse_args()
 
     cfg = load_config(args)
@@ -302,6 +307,24 @@ def main():
         rows = [r for r in rows if r[1] == g]
     if args.year:
         rows = [r for r in rows if args.year in r[0]]
+    theme_kw = None
+    if args.theme:
+        # 不带 --scaffold 时，--theme 视为主题检索关键词：
+        # 同时匹配"抽出的主题"与"项目文件夹名"，大小写不敏感。
+        theme_kw = args.theme.strip()
+        kw = theme_kw.lower()
+        rows = [r for r in rows
+                if kw in r[2].lower() or kw in os.path.basename(r[3]).lower()]
+        # 同一主题跨学年/年级出现时，按主题聚类，方便对比历届做法
+        rows.sort(key=lambda r: (r[2], r[0]))
+
+    if not rows:
+        if theme_kw:
+            print(f"未找到主题包含「{theme_kw}」的项目。可换更短的关键词再试"
+                  f"（如只搜「豆芽」不搜「小豆子大世界」）。")
+        else:
+            print("未找到任何年级项目文件夹。请确认 root 路径与 grades 配置。")
+        return
 
     if args.json:
         out = [
@@ -310,6 +333,9 @@ def main():
         ]
         print(json.dumps(out, ensure_ascii=False, indent=2))
     else:
+        if theme_kw:
+            print(f"主题检索：「{theme_kw}」命中 {len(rows)} 个项目（按主题聚类）")
+            print("-" * 60)
         print_index(rows)
         print(f"\n共 {len(rows)} 个年级项目。")
 

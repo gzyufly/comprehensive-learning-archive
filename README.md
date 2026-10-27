@@ -8,7 +8,7 @@
 
 ## 它能做什么
 
-1. **按年级组 + 学年定位项目**：一键列出某校某年级历年所有综合实践项目（年份、主题、路径、文件数）。
+1. **按年级组 + 学年 + 主题定位项目**：一键列出某校某年级历年所有综合实践项目（年份、主题、路径、文件数）；也能按主题反查——某个主题是哪一年、哪个年级做的，历届项目一目了然（按主题聚类）。
 2. **浏览项目内部结构**：打印某年级项目的完整目录树，快速定位开题方案、结题新闻稿、三角模型、展板、视频等。
 3. **调整与维护**：新增 / 移动 / 重命名资料，或为新学年、新年级一键搭建标准"五阶段"文件夹骨架。
 4. **课程设计与复盘工具引导**：告诉老师不同角色（年级组长 / 项目负责人）在课程设计、目标对齐、任务分解、进度统筹、结题复盘各环节该用哪张表、怎么填、填完归档到哪里，并提供**字段级填写要点**（见 `references/course-design-toolkit.md`）与**空白模板母版**（市场安装包内含 `assets/` 全套 19 个母版）。
@@ -132,6 +132,10 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 & $py $skill --grade 八年级
 # 3) 八年级 + 指定学年
 & $py $skill --grade 八年级 --year 2024—2025第二学期
+# 3b) 按主题检索（跨学年/年级，大小写不敏感；命中多个时按主题聚类）
+& $py $skill --theme AI未来
+# 3c) 主题 + 年级组合
+& $py $skill --theme 小豆 --grade 二年级
 # 4) 机器可读 JSON
 & $py $skill --grade 八年级 --json
 # 5) 打印某年级项目的目录树
@@ -145,6 +149,7 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 ### 自然语言示例（直接在 WorkBuddy 里说）
 
 - "帮我找一下八年级近几年的综合实践项目，分别在哪个学年、主题是什么"
+- "**「AI未来」这个主题是哪一年、哪个年级做的？历届都有哪些项目**"（按主题检索）
 - "打开 2024—2025 第二学期 三年级 的复盘反思表"
 - "**三年级主题课程怎么设计？第一步该填什么表**"
 - "**项目任务怎么分解？目标对齐表、统筹表、三角模型分别怎么填**"
@@ -228,11 +233,11 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 |---|---|
 | 包结构 | zip 内第一层必须是技能目录：`comprehensive-learning-archive/SKILL.md` |
 | 目录层级 | 最多两级（`SKILL.md`、`references/xx.md`、`scripts/xx.py` 均合规） |
-| 体积 | ≤ 3MB（v1.3.0 含 `assets/` 模板文件，约 1.9MB，仍在限内但余量有限） |
+| 体积 | ≤ 3MB（v1.4.0 含 `assets/` 模板文件，约 1.9MB，仍在限内但余量有限） |
 | 禁止带入 | `.git/`、`config.json`（含本校真实路径）、`~$*`（Office 临时锁文件）、API Key / 密码等隐私信息 |
 | 隐私 | 范例文件中的真实教师姓名已在打包时脱敏（替换为"某"） |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.3.0.zip`（含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`、`assets/` 19 个母版），已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.4.0.zip`（含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`、`assets/` 19 个母版），已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 **含 `assets/` 的完整包必须用构建脚本生成**（二进制母版不在 Git 仓库里，无法用 Copy-Item 收集）：
 
@@ -240,7 +245,7 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 $py = "C:\Users\<你>\.workbuddy\binaries\python\versions\3.13.12\python.exe"
 & $py "路径\to\comprehensive-learning-archive\scripts\build_market_package.py" `
     --source "C:\Users\<你>\AppData\Local\Temp\cla.zip" `
-    --out   "路径\to\comprehensive-learning-archive-1.3.0.zip"
+    --out   "路径\to\comprehensive-learning-archive-1.4.0.zip"
 ```
 
 `--source` 接受两种输入：① 工具箱打包成的 zip（推荐——把本校"综合性学习工具"文件夹整体压缩即可，脚本内存解压、不落盘）；② 工具箱文件夹路径。脚本自动完成：取仓库文档/脚本 → 母版扁平放入 `assets/` → 默认脱敏范例文件中的真实姓名（`--no-desensitize` 可关闭）→ 排除 `~$` 锁文件与 2 个历史版结构图（`--include-history` 可纳入）→ 生成 `assets/母版清单.txt` → 打包后自查（第一层目录、层级、体积、脱敏校验）。
@@ -255,7 +260,7 @@ New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
 Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
 # 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.3.0.zip" -Force
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.4.0.zip" -Force
 ```
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
@@ -266,7 +271,7 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | `display_name` / `display_name_en` | 否 | 项目式综合性学习课程 / Project-Based Comprehensive Learning |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.3.0` |
+| `version` | **是** | `1.4.0` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核

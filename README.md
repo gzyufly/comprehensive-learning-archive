@@ -11,6 +11,7 @@
 1. **按年级组 + 学年定位项目**：一键列出某校某年级历年所有综合实践项目（年份、主题、路径、文件数）。
 2. **浏览项目内部结构**：打印某年级项目的完整目录树，快速定位开题方案、结题新闻稿、三角模型、展板、视频等。
 3. **调整与维护**：新增 / 移动 / 重命名资料，或为新学年、新年级一键搭建标准"五阶段"文件夹骨架。
+4. **课程设计与复盘工具引导**：告诉老师不同角色（年级组长 / 项目负责人）在课程设计、目标对齐、任务分解、进度统筹、结题复盘各环节该用哪张表、怎么填、填完归档到哪里，并提供空白模板母版（见 `references/course-design-toolkit.md`）。
 
 ---
 
@@ -128,6 +129,17 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 
 > 已配置 `config.json` 时，上面的 `--root` 可省略。临时换学校可用 `--root "其他路径"` 或 `--grades 高一,高二,高三`。
 
+### 自然语言示例（直接在 WorkBuddy 里说）
+
+- "帮我找一下八年级近几年的综合实践项目，分别在哪个学年、主题是什么"
+- "打开 2024—2025 第二学期 三年级 的复盘反思表"
+- "**三年级主题课程怎么设计？第一步该填什么表**"
+- "**项目任务怎么分解？目标对齐表、统筹表、三角模型分别怎么填**"
+- "**项目结题了，复盘反思怎么做、课程基因怎么沉淀**"
+- "**有没有空白的大概念表述表 / 对齐表 / 统筹表 / 进度表模板**"
+
+> 后四类问题由 `references/course-design-toolkit.md`（课程设计与复盘工具箱导航）回答：内含 23 个工具文件逐个说明、工具 ↔ 归档五阶段对位表、组长线 / 项目负责人线 / 进度线 / 复盘线四条工作主线。
+
 ---
 
 ## 跨校适配小贴士
@@ -136,6 +148,7 @@ $skill = "路径\to\comprehensive-learning-archive\scripts\index_projects.py"
 - **学年文件夹命名特殊**（如 `2025级`、`七年级上`）：调整 `year_keywords` 或在脚本 `is_year_folder` 处自定义正则。
 - **阶段划分不同**：改 `stages` 数组。
 - **主题总表**（历年主题 `.doc`/`.docx`）：请用 Word/WPS 手动维护，脚本不读取二进制总表。
+- **课程设计工具母版**（`综合性学习工具` 文件夹）：可按本校学情修改后使用，技能不绑定学校；工具箱文件名与归档成品高度同源，是"某张表长什么样"的最佳参照。
 
 ---
 
@@ -200,10 +213,10 @@ cd "$HOME\.workbuddy\skills\comprehensive-learning-archive"; Copy-Item config.ex
 |---|---|
 | 包结构 | zip 内第一层必须是技能目录：`comprehensive-learning-archive/SKILL.md` |
 | 目录层级 | 最多两级（`SKILL.md`、`references/xx.md`、`scripts/xx.py` 均合规） |
-| 体积 | ≤ 3MB（本技能约 12KB） |
-| 禁止带入 | `.git/`、`config.json`（含本校真实路径）、API Key / 密码等隐私信息 |
+| 体积 | ≤ 3MB（v1.1.0 约 30KB；v1.2.0 起含 `assets/` 模板文件，约 1.9–2.1MB，仍在限内但余量有限） |
+| 禁止带入 | `.git/`、`config.json`（含本校真实路径）、`~$*`（Office 临时锁文件）、API Key / 密码等隐私信息 |
 
-本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.0.3.zip`，仅含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
+本仓库已备好可直接上传的包：`comprehensive-learning-archive-1.1.0.zip`，含 `SKILL.md`、`references/`、`scripts/`、`config.example.json`，已通过官方校验器 `validate_skill` 校验（结果：Skill is valid!）。
 
 自己重新打包（PowerShell）：
 
@@ -212,11 +225,14 @@ $src   = "路径\to\comprehensive-learning-archive"
 $stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
 Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
-Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
+Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
+Copy-Item "$src\assets" $stage -Recurse        # 仅当存在 assets/（v1.2.0 起）
 # 注意：-Path 必须指向技能目录本身（不是它的父目录），否则 zip 会多套一层目录导致解析失败
-Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.0.3.zip" -Force
+Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-1.1.0.zip" -Force
 ```
+
+> `assets/` 内必须**扁平放文件**（`assets\1—1、主题课程大概念及目标表述.docx`），不要再套子目录——平台要求包内目录最多两级。
 
 ### 第 3 步：SKILL.md 必填字段（已按平台规范补齐）
 
@@ -226,7 +242,7 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 | `display_name` / `display_name_en` | 否 | 综合性学习课程资料 / Comprehensive Learning Archive |
 | `description` | **是** | 用途 + 触发词（务必写清"何时触发"，含"可能/也许"等模糊词易被驳回） |
 | `description_zh` / `description_en` | **是** | 中英文简短介绍 |
-| `version` | **是** | `1.0.3` |
+| `version` | **是** | `1.1.0` |
 | `author` | **是** | `广州番禺京师奥园南奥实验学校唐术才` |
 
 ### 第 4 步：提交审核
@@ -255,13 +271,13 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 
 | 改动类型 | 升哪一位 | 示例 |
 |---|---|---|
-| 改文案、改署名、修错别字、仅重新打包 | 第三位 Z +1 | 1.0.1 → 1.0.2 |
-| 新增功能或命令（如加一个 `--export` 参数） | 第二位 Y +1，Z 归 0 | 1.0.2 → 1.1.0 |
+| 改文案、改署名、修错别字、仅重新打包 | 第三位 Z +1 | 1.0.2 → 1.0.3 |
+| 新增能力或参考资料（如新增工具箱引导、新增 references 文档） | 第二位 Y +1，Z 归 0 | 1.0.3 → 1.1.0 |
 | 不兼容的结构性改动（改配置字段名、改脚本参数） | 第一位 X +1，Y/Z 归 0 | 1.1.0 → 2.0.0 |
 
 ### 2. 四步流程
 
-1. **改内容**：编辑技能目录下的 `SKILL.md` / `scripts/index_projects.py` / `references/folder-structure.md`。
+1. **改内容**：编辑技能目录下的 `SKILL.md` / `scripts/index_projects.py` / `references/folder-structure.md` / `references/course-design-toolkit.md`。
 2. **升版本**：把 `SKILL.md` frontmatter 里的 `version` 按上表加一（只改这一处）。
 3. **重新打包**（PowerShell，把 `路径\to\comprehensive-learning-archive` 换成实际路径）：
 
@@ -270,8 +286,9 @@ $src   = "路径\to\comprehensive-learning-archive"
 $stage = "$env:TEMP\skillhub\comprehensive-learning-archive"
 Remove-Item $stage -Recurse -Force -ErrorAction SilentlyContinue
 New-Item -ItemType Directory -Path (Split-Path $stage) -Force | Out-Null
-Copy-Item "$src\SKILL.md", "$src\config.example.json" $stage
+Copy-Item "$src\SKILL.md", "$src\config.example.json", "$src\README.md", "$src\LICENSE" $stage
 Copy-Item "$src\references", "$src\scripts" $stage -Recurse
+Copy-Item "$src\assets" $stage -Recurse        # 仅当存在 assets/
 # 注意：-Path 必须指向技能目录本身，指向父目录会让 zip 多套一层，导致解析失败
 Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning-archive-<新版本号>.zip" -Force
 ```
@@ -279,15 +296,17 @@ Compress-Archive -Path $stage -DestinationPath "$env:TEMP\comprehensive-learning
 4. **自查后上传**：
    - 打开 `SKILL.md` 确认 `version` 已是新号；
    - 双击生成的 zip，确认第一层是 `comprehensive-learning-archive\` 文件夹（不是 `skillhub\` 或 Temp 目录）；
-   - 确认包里没有 `.git`、`config.json`；
+   - 确认包里没有 `.git`、`config.json`、`~$*`；
    - 到开放平台提交新 zip，审核通过后上架。
+5. **清理旧包**：新版本上架后，删除本地上一版 zip（如 `comprehensive-learning-archive-1.0.3.zip`），只保留当前版本，避免误传旧包。
 
 ### 3. 常见报错对照
 
 | 报错 | 原因 | 处理 |
 |---|---|---|
 | 包内版本号必须大于当前最新版本 | 版本号没升，或升得不够 | 按上表升一位，改 `SKILL.md` 的 `version` 后重打 |
-| 解析失败（结构类） | zip 第一层不是技能目录，或包内混入 `.git` / `config.json` | 用上面的命令重打，别用"直接压缩整个仓库文件夹"的方式 |
+| 解析失败（结构类） | zip 第一层不是技能目录，或包内混入 `.git` / `config.json` / `~$*` | 用上面的命令重打，别用"直接压缩整个仓库文件夹"的方式 |
+| 解析失败（体积类） | 超过 3MB | 裁剪 `assets/`（先删历史版结构图，再删培训 PPT） |
 | description 相关驳回 | 触发条件写得含糊 | 保留 `SKILL.md` 现有的 description 写法（已按平台规范写过） |
 
 > 想让 GitHub 上的开源仓库与上架版本保持一致，改完再执行 `git add . ; git commit -m "..." ; git push` 即可；这一步不影响上架审核，可只做上架、不同步仓库。

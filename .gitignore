@@ -9,3 +9,9 @@ __pycache__/
 # 系统
 .DS_Store
 Thumbs.db
+
+# Office 临时锁文件（~$ 开头，永不提交）
+~$*
+
+# 发布用安装包（只放本地 dist/，不入库）
+*.zip
